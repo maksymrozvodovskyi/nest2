@@ -18,3 +18,23 @@ model User {
 
   @@map("users")
 }
+
+model Message {
+  id       String @id @default(uuid())
+
+  text     String
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("messages")
+}
+
+model Artist {
+  id       String @id @default(uuid())
+
+  name     String
+  genre     String
+
+  @@map("artists")
+}
