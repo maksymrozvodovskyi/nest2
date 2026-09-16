@@ -1,27 +1,37 @@
-import { Injectable } from '@nestjs/common';
-import { SpotifyService } from './spotify/spotify.service.js';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { PrismaService } from './infra/prisma/prisma.service.js';
 
 @Injectable()
 export class AppService {
-  constructor(private readonly spotifyService: SpotifyService) {}
+  constructor(private readonly prismaService: PrismaService) {}
 
-  async getArtist(id: string) {
-    const artist = await this.spotifyService.getArtist(id);
+  async getLinkByShortCode(code: string) {
+    const link = await this.prismaService.link.findUnique({
+      where: {
+        shortCode: code,
+      },
+    });
 
-    return artist;
+    if (!link) {
+      throw new NotFoundException('Link not found');
+    }
+
+    return link;
   }
 
-  async getAlbum(id: string) {
-    const album = await this.spotifyService.getAlbum(id);
+  async trackClick(code: string, ipAdress: string, userAgent: string) {
+    const link = await this.getLinkByShortCode(code);
 
-    return {
-      id: album.id,
-      title: album.name,
-      releaseDate: album.release_date,
-    };
-  }
-
-  getHello() {
-    return 'Hello World!';
+    await this.prismaService.click.create({
+      data: {
+        ipAdress,
+        userAgent,
+        link: {
+          connect: {
+            id: link.id,
+          },
+        },
+      },
+    });
   }
 }
