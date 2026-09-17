@@ -18,20 +18,4 @@ export class AppService {
 
     return link;
   }
-
-  async trackClick(code: string, ipAdress: string, userAgent: string) {
-    const link = await this.getLinkByShortCode(code);
-
-    await this.prismaService.click.create({
-      data: {
-        ipAdress,
-        userAgent,
-        link: {
-          connect: {
-            id: link.id,
-          },
-        },
-      },
-    });
-  }
 }
