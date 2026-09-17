@@ -2,7 +2,7 @@ import { Body, Controller, Delete, Param, Post } from '@nestjs/common';
 import { LinkService } from './link.service.js';
 import { Authorization } from '../../common/decorators/authorization.decorator.js';
 import { CreateLinkDto } from './dto/create-link.dto.js';
-import { Authorized } from '../../common/decorators/authorized.decoratod.js';
+import { Authorized } from '../../common/decorators/authorized.decorator.js';
 
 @Controller('link')
 export class LinkController {
@@ -16,7 +16,7 @@ export class LinkController {
 
   @Authorization()
   @Delete(':id')
-  async delete(@Param('id') id: string) {
-    return await this.linkService.delete(id);
+  async delete(@Param('id') id: string, @Authorized('id') userId: string) {
+    return await this.linkService.delete(id, userId);
   }
 }

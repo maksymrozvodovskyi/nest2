@@ -31,19 +31,6 @@ model Link {
   updatedAt DateTime @updatedAt @map("updated_at")
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId    String   @map("user_id")
-  clicks    Click[]
 
   @@map("links")
-}
-
-model Click {
-  id String @id @default(uuid())
-
-  ipAdress  String @map("ip_adress")
-  userAgent String @map("user_agent")
-
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
-  link      Link     @relation(fields: [linkId], references: [id], onDelete: Cascade)
-  linkId    String   @map("link_id")
 }

@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../../infra/prisma/prisma.service.js';
 import { CreateLinkDto } from './dto/create-link.dto.js';
 import { randomBytes } from 'crypto';
@@ -35,7 +35,7 @@ export class LinkService {
     };
   }
 
-  async delete(id: string) {
+  async delete(id: string, userId: string) {
     const link = await this.prismaService.link.findUnique({
       where: {
         id,
@@ -46,10 +46,18 @@ export class LinkService {
       throw new NotFoundException('Link not found');
     }
 
+    if (link.userId !== userId) {
+      throw new ForbiddenException('You can delete only your own links');
+    }
+
     await this.prismaService.link.delete({
       where: {
         id,
       },
     });
+
+    return {
+      message: 'Link deleted successfully',
+    };
   }
 }

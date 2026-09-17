@@ -7,14 +7,13 @@ import {
   Post,
   Req,
   Res,
-  UseGuards,
 } from '@nestjs/common';
 import { AuthService } from './auth.service.js';
 import { RegisterRequest } from './dto/register.dto.js';
 import { LoginRequest } from './dto/login.dto.js';
 import type { Request, Response } from 'express';
 import { Authorization } from '../../common/decorators/authorization.decorator.js';
-import { Authorized } from '../../common/decorators/authorized.decoratod.js';
+import { Authorized } from '../../common/decorators/authorized.decorator.js';
 import type { User } from '../../generated/prisma/client.js';
 
 @Controller('auth')

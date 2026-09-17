@@ -37,13 +37,13 @@ export class AuthService {
   async register(res: Response, dto: RegisterRequest) {
     const { name, email, password } = dto;
 
-    const existUser = await this.prismaService.user.findUnique({
+    const existingUser = await this.prismaService.user.findUnique({
       where: {
         email,
       },
     });
 
-    if (existUser) {
+    if (existingUser) {
       throw new ConflictException('User already exist');
     }
 
@@ -72,13 +72,13 @@ export class AuthService {
     });
 
     if (!user) {
-      throw new NotFoundException('User not found or password is invalid');
+      throw new UnauthorizedException('User not found or password is invalid');
     }
 
     const isValidPassword = await verify(user.password, password);
 
     if (!isValidPassword) {
-      throw new NotFoundException('User not found or password is invalid');
+      throw new UnauthorizedException('User not found or password is invalid');
     }
 
     return this.auth(res, user.id);
@@ -113,6 +113,10 @@ export class AuthService {
 
   async logout(res: Response) {
     this.setCookie(res, 'refreshToken', new Date(0));
+
+    return {
+      message: 'Logged out successfully',
+    };
   }
 
   async validate(id: string) {
